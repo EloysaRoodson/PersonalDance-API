@@ -23,7 +23,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<Map<String, String>> handleConflict(DataIntegrityViolationException ex) {
 		Map<String, String> body = new HashMap<>();
-		body.put("error", "Operação inválida: " + ex.getRootCause().getMessage());
+		Throwable root = ex.getRootCause();
+		String msg = (root != null && root.getMessage() != null) ? root.getMessage() : ex.getMessage();
+		body.put("error", "Operação inválida: " + msg);
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
 	}
 
